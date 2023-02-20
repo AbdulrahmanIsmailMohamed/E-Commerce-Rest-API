@@ -1,0 +1,25 @@
+{
+  "name": "ecommerce",
+  "version": "1.0.0",
+  "description": "eCommerce API",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AbdulrahmanIsmailMohamed/eCommerce.git"
+  },
+  "author": "Abdulrahman Ismail",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/AbdulrahmanIsmailMohamed/eCommerce/issues"
+  },
+  "homepage": "https://github.com/AbdulrahmanIsmailMohamed/eCommerce#readme",
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "mongoose": "^6.9.2",
+    "morgan": "^1.10.0"
+  }
+}
