@@ -1,4 +1,4 @@
-const Category = require("../modules/category");
+const Category = require("../models/category");
 const asyncWrapper = require("../middleware/async");
 
 const getAllCategory = asyncWrapper(async (req, res) => {

@@ -1,6 +1,6 @@
-const Product = require("../modules/product");
+const Product = require("../models/product");
 const asyncWrapper = require("../middleware/async");
-const Category = require("../modules/category");
+const Category = require("../models/category");
 
 // idparams
 const idParam = (req, res, nxt, val) => {
