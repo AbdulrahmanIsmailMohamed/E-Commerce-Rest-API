@@ -1,3 +1,5 @@
+const mongoose = require("mongoose");
+const connectDB = require("./db/connect");
 const express = require("express");
 require("dotenv").config();
 require("./db/connect")
@@ -29,13 +31,22 @@ const productRoute = require("./routes/products");
 const api = process.env.API
 app.use(`${api}/users`, userRoute);
 app.use(`${api}/categorys`, categoryRoute);
-// app.use(`${api}/orders`, orderRoute);
+app.use(`${api}/orders`, orderRoute);
 app.use(`${api}/products`, productRoute);
 
 
 
-// listening server
-const port = process.env.PORT || 3000;
-app.listen(port, () => {
-    console.log(`Server Listening On PORT ${port}`);
-})
+// listening server And Connect With DB
+const server = async () => {
+    try {
+        await connectDB(mongoose);
+        const port = process.env.PORT || 3000;
+        app.listen(port, () => {
+            console.log(`Server Listening On PORT ${port}`);
+        });
+    } catch (error) {
+        console.trace("Error In Server Or DB");
+        console.log(error);
+    }
+}
+server();

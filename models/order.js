@@ -1,3 +1,5 @@
+const mongoose = require("mongoose");
+
 const orderSchema = mongoose.Schema({
     orderItems: [{
         type: mongoose.Schema.Types.ObjectId,
@@ -45,7 +47,7 @@ const orderSchema = mongoose.Schema({
     },
 })
 
-orderSchema.virtual('id').get(function () {
+orderSchema.virtual('id').get(() => {
     return this._id;
 });
 
@@ -53,4 +55,6 @@ orderSchema.set('toJSON', {
     virtuals: true,
 });
 
-exports.Order = mongoose.model('Order', orderSchema);
+const Order = mongoose.model('Order', orderSchema);
+
+module.exports = Order
