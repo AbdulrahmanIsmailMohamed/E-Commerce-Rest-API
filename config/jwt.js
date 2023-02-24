@@ -20,7 +20,11 @@ function authJwt() {
 }
 
 function isRevoked(req, token) {
-    if(!token.payloud.isAdmin) return true
+    if (token.payload.isAdmin) {
+        return false;
+    }
+    console.trace("Unauthorized")
+    return true
 }
 
 
