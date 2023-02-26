@@ -44,9 +44,34 @@ const login = asyncWrapper(async (req, res) => {
 
 });
 
+const updateUser = asyncWrapper(async (req, res) => {
+    const userExist = await User.findById(req.params.id);
+    if (!userExist) return res.status(404).send("The User Not Found");
+    let newPassword;
+    if (req.body.password) newPassword = bcrypt.hashSync(req.body.password, 10);
+    else newPassword = userExist.password;
+    delete req.body.password;
+    const user = await User.findByIdAndUpdate(
+        req.params.id,
+        { ...req.body, password: newPassword },
+        { new: true }
+    );
+    if (!user) return res.status(400).json({ success: false, message: "The User Can't be Updated" });
+    res.send(user)
+});
+
+const deleteUser = asyncWrapper(async (req, res) => {
+    const user = await User.findByIdAndRemove(req.params.id);
+    if (!user) return res.status(400).json({ success: false, message: "The User can't Be Deleted" });
+    res.json({ success: true })
+})
+
+
 module.exports = {
     users,
     register,
     user,
-    login
+    login,
+    updateUser,
+    deleteUser
 }

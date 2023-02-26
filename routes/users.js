@@ -3,7 +3,9 @@ const {
     users,
     register,
     user,
-    login
+    login,
+    updateUser,
+    deleteUser
 } = require("../controllers/userController");
 
 
@@ -13,6 +15,6 @@ router.post("/register", register);
 
 router.post("/login", login);
 
-router.get("/:id",user);
+router.route("/:id").get(user).put(updateUser).delete(deleteUser);
 
 module.exports = router;
