@@ -12,20 +12,28 @@ function authJwt() {
             { url: /\/public\/uploads(.*)/, methods: ['GET', 'OPTIONS'] },
             { url: /\/api\/v1\/products(.*)/, methods: ['GET', 'OPTIONS'] },
             { url: /\/api\/v1\/categories(.*)/, methods: ['GET', 'OPTIONS'] },
-            { url: /\/api\/v1\/orders(.*)/, methods: ['GET', 'OPTIONS'] },
+            // { url: /\/api\/v1\/orders(.*)/, methods: ['GET', 'OPTIONS'] },
             `${api}/users/login`,
             `${api}/users/register`,
         ]
     });
 }
 
-function isRevoked(req, token) {
+const isRevoked = (req, token) => {
     if (token.payload.isAdmin) {
+        // Admins have full access to all resources
         return false;
+    } else if (!token.payload.isAdmin) {
+        // Regular users can access POST And DELETE requests for Orders and all endpoint it works for her unless
+        if (req.method === "POST" || req.method === "DELETE" || req.method === "GET" && ['/api/v1/orders'].some(path => req.originalUrl.startsWith(path))) {
+            return false;
+        }
     }
+    // All other requests are unauthorized
     console.trace("Unauthorized")
-    return true
+    return true;
 }
+
 
 
 module.exports = authJwt;
