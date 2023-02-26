@@ -18,6 +18,7 @@ app.use(morgan("tiny")); // HTTP request logger middleware for node.js
 // middleware
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+app.use('/public/uploads', express.static('public/uploads'));
 app.use(errorHandling);
 app.use(authJwt());
 

@@ -16,7 +16,7 @@ function authJwt() {
             `${api}/users/login`,
             `${api}/users/register`,
         ]
-    })
+    });
 }
 
 function isRevoked(req, token) {

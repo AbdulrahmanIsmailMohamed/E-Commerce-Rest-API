@@ -1,6 +1,7 @@
 const Product = require("../models/product");
 const asyncWrapper = require("../middleware/async");
 const Category = require("../models/category");
+const mongoose = require("mongoose");
 
 // idparams
 const idParam = (req, res, nxt, val) => {
@@ -25,9 +26,17 @@ const getAllProducts = asyncWrapper(async (req, res, nxt) => {
 
 const createProduct = asyncWrapper(async (req, res, nxt) => {
     const category = await Category.findById(req.body.category);
-    if (!category) return res.status(400).send("Not Valide")
-    const product = new Product(req.body);
-    await product.save();
+    if (!category) return res.status(400).send("Not Valide");
+
+    // multer
+    const file = req.file;
+    if (!file) return res.status(400).send('No image in the request')
+    const fileName = file.filename
+    const basePath = `${req.protocol}://${req.get('host')}/public/uploads/`;
+    delete req.body.image
+    let image = `${basePath}${fileName}` // "http://localhost:3000/public/upload/image-2323232"
+
+    const product = await Product.create({ ...req.body, image: image });
     if (!product) return res.status(400).send("the Product can't be created");
     res.status(201).send(product);
 });
@@ -39,6 +48,7 @@ const deleteProduct = asyncWrapper(async (req, res, nxt) => {
 });
 
 const updateProduct = asyncWrapper(async (req, res, nxt) => {
+    if (!mongoose.isValidObjectId(req.params.id)) return res.status(400).send('Invalid Product Id');
     const category = await Category.findById(req.body.category);
     if (!category) return res.status(400).send("Not Valide")
     const product = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true });
@@ -66,6 +76,26 @@ const getFeaturedProduct = asyncWrapper(async (req, res) => {
     res.send(featuredproduct);
 });
 
+const galleryImages = asyncWrapper(async (req, res) => {
+    if (!mongoose.isValidObjectId(req.params.id)) return res.status(400).send('Invalid Product Id');
+    const files = req.files;
+    if (!files) return res.status(400).send("No Image in request");
+    let imagesPaths = [];
+    const basePath = `${req.protocol}://${req.get('host')}/public/uploads/`;
+    files.map((file) => {
+        imagesPaths.push(`${basePath}${file.filename}`);
+    });
+    const product = await Product.findByIdAndUpdate(
+        req.params.id,
+        {
+            images: imagesPaths
+        },
+        { new: true}
+    );
+    if(!product) return res.status(500).send('the gallery cannot be updated!');
+    res.send(product);
+});
+
 module.exports = {
     getAllProducts,
     createProduct,
@@ -74,5 +104,6 @@ module.exports = {
     getProduct,
     idParam,
     countProducts,
-    getFeaturedProduct
+    getFeaturedProduct,
+    galleryImages
 }
